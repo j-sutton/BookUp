@@ -1,6 +1,9 @@
-﻿using System;
+﻿using BookUp.Models;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Web;
 using System.Web.Mvc;
 
@@ -8,23 +11,41 @@ namespace BookUp.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        public ActionResult Index(string searchString)
         {
+            var books = new List<Book>();
+            if (searchString != String.Empty && searchString != null)
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    string url = String.Format("https://www.googleapis.com/books/v1/volumes?q={0}", searchString);
+                    var response = httpClient.GetStringAsync(new Uri(url)).Result;
+
+                    JObject responseObject = JObject.Parse(response);
+                    if (responseObject["error"] != null)
+                    {
+                        ViewBag.Books = books;
+                        return View();
+                    }
+                    JArray items = (JArray)responseObject["items"];
+                    foreach (var item in items)
+                    {
+                        var book = new Book
+                        {
+                            Title = item["volumeInfo"]["title"].ToString()
+
+                        };
+
+                        books.Add(book);
+                    }
+                }
+            }
+
+            ViewBag.Books = books;
+
             return View();
         }
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
 
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
     }
 }

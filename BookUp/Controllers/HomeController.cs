@@ -25,15 +25,21 @@ namespace BookUp.Controllers
                     if (responseObject["error"] != null)
                     {
                         ViewBag.Books = books;
-                        return View();
+                        return View(books);
                     }
                     JArray items = (JArray)responseObject["items"];
                     foreach (var item in items)
                     {
+                        var authors = new List<string>();
+                        foreach (var author in item["volumeInfo"]["authors"])
+                        {
+                            
+                            authors.Add(author.ToString());
+                        }
                         var book = new Book
                         {
-                            Title = item["volumeInfo"]["title"].ToString()
-
+                            Title = item["volumeInfo"]["title"].ToString(),
+                            Authors = authors
                         };
 
                         books.Add(book);
@@ -43,7 +49,7 @@ namespace BookUp.Controllers
 
             ViewBag.Books = books;
 
-            return View();
+            return View(books);
         }
 
 

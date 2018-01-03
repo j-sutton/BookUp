@@ -6,7 +6,21 @@
 <div>
     <h1>@Model.Title</h1>
     <div>
-        @Model.Authors[0]
+        <b>
+            Authors:
+        </b>
+        @foreach (var author in @Model.Authors)
+        {
+            @author.ToString()
+        }
+        <p>
+            Page Count:@Model.PageCount <br/>
+            @*Description:@Model.Description <br />
+            Published Date:@Model.PublishedDate <br />
+            Average Rate:@Model.AverageRate <br />*@
+
+        </p>
+
     </div>
 </div>
 

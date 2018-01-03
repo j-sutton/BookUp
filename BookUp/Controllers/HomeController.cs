@@ -36,10 +36,16 @@ namespace BookUp.Controllers
                             
                             authors.Add(author.ToString());
                         }
+                        var pageCount = (int)(item["volumeInfo"]["pageCount"] ?? 0);
+                        var description = (item["volumeInfo"]["description"] ?? "").ToString();
                         var book = new Book
                         {
                             Title = item["volumeInfo"]["title"].ToString(),
-                            Authors = authors
+                            Authors = authors,
+                            //AverageRating = (double)(item["volumeInfo"]["averageRating"])
+                           
+                           
+                            //PublishedDate =item["volumeInfo"]["publishedDate"].ToString()
                         };
 
                         books.Add(book);
